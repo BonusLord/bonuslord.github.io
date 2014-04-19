@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Megan & Andy's Honeymoon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+	
+		$(document).ready(function() {
+			$.ajax({
+				type: "GET",
+				url: "allCoords.csv",
+				dataType: "text",
+				success: function(data) {processData(data);}
+			 });
+		});
+		
+
+		var map;
+		
+		function processData(allText) {
+		
+			var allTextLines = allText.split(/\r\n|\n/);
+			//var headers = allTextLines[0].split(',');
+			//var lines = [];
+
+			var coords = [];
+			
+			for (var i=0; i<allTextLines.length; i++) {
+				var data = allTextLines[i].split(',');
+				coords.push(new google.maps.LatLng(data[0],data[1]));
+			}
+			// alert(lines);
+			
+			var roadTrip = new google.maps.Polyline({
+				path:coords,
+				strokeColor: "#FF0000",
+				strokeOpacity: 1.0,
+				strokeWeight: 2
+			});
+			
+			roadTrip.setMap(map);
+		}
+		
+		function initialize() {
+		var mapOptions = {
+		  zoom: 5,
+		  width:500
+		  center: new google.maps.LatLng(44.81096518323366,-102.416336691108),
+		  mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+		map = new google.maps.Map(document.getElementById('map-canvas'),
+			mapOptions);
+		}
+
+		google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>
